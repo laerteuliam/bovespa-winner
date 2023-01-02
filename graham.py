@@ -105,54 +105,54 @@ def fill_infos_by_ticker(ticker, opener):
     'dividends_stability': False
   }
   
-  # Fetching Lucro Liquido
-  url = f'https://api-analitica.sunoresearch.com.br/api/Statement/GetStatementResultsReportByTicker?type=y&ticker={ticker}&period=999'
-  with opener.open(url) as link:
-    company_results = link.read().decode('ISO-8859-1')
-  company_results = json.loads(company_results)
+  # # Fetching Lucro Liquido
+  # url = f'https://api-analitica.sunoresearch.com.br/api/Statement/GetStatementResultsReportByTicker?type=y&ticker={ticker}&period=999'
+  # with opener.open(url) as link:
+  #   company_results = link.read().decode('ISO-8859-1')
+  # company_results = json.loads(company_results)
   
-  current_year = year
+  # current_year = year
   
-  lucros = [r for r in company_results if r['description'] == 'Lucro LÃ\xadquido'][0]
-  years = [x for x in lucros.keys() if re.match('C_\w{4}$', x)]
-  if (len(years) == 0):
-    return
-  years = [x for x in years if int(re.findall('C_(\w{4})$', x)[0]) < current_year]
-  list.sort(years)
-  lucros = { year: lucros[year] for year in years }
-  ultimos_lucros = list(lucros.values())[-10:]
+  # lucros = [r for r in company_results if r['description'] == 'Lucro LÃ\xadquido'][0]
+  # years = [x for x in lucros.keys() if re.match('C_\w{4}$', x)]
+  # if (len(years) == 0):
+  #   return
+  # years = [x for x in years if int(re.findall('C_(\w{4})$', x)[0]) < current_year]
+  # list.sort(years)
+  # lucros = { year: lucros[year] for year in years }
+  # ultimos_lucros = list(lucros.values())[-10:]
   
-  # Ugly Fix for missing data :( Looks like the API have missing data -_-
-  # Fill None values with the Mean earning
-  present_lucros = [i for i in ultimos_lucros if i]
-  if (len(present_lucros) == 0):
-    mean = 0
-  else:
-    mean = sum(present_lucros) / len(present_lucros)
-  ultimos_lucros = [mean if v is None else v for v in ultimos_lucros]
-  # End of Ugly Fix
+  # # Ugly Fix for missing data :( Looks like the API have missing data -_-
+  # # Fill None values with the Mean earning
+  # present_lucros = [i for i in ultimos_lucros if i]
+  # if (len(present_lucros) == 0):
+  #   mean = 0
+  # else:
+  #   mean = sum(present_lucros) / len(present_lucros)
+  # ultimos_lucros = [mean if v is None else v for v in ultimos_lucros]
+  # # End of Ugly Fix
   
-  infos[ticker]['survivability'] = f'C_{current_year - 10}' in lucros.keys()
-  infos[ticker]['earnings_stability'] = all(ultimos_lucros[i] > 0 for i in range(len(ultimos_lucros)))
-  infos[ticker]['earnings_growth'] = all(ultimos_lucros[i] <= ultimos_lucros[i+1] for i in range(len(ultimos_lucros)-1)) # Isso aqui deve virar uma função e devemos ver a tendência dessa função!
+  # infos[ticker]['survivability'] = f'C_{current_year - 10}' in lucros.keys()
+  # infos[ticker]['earnings_stability'] = all(ultimos_lucros[i] > 0 for i in range(len(ultimos_lucros)))
+  # infos[ticker]['earnings_growth'] = all(ultimos_lucros[i] <= ultimos_lucros[i+1] for i in range(len(ultimos_lucros)-1)) # Isso aqui deve virar uma função e devemos ver a tendência dessa função!
   
-  # Fetching LPA's and DPA's
-  url = f'https://api-analitica.sunoresearch.com.br/api/Indicator/GetIndicatorsYear?ticker={ticker}'
-  with opener.open(url) as link:
-    company_indicators = link.read().decode('ISO-8859-1')
-  company_indicators = json.loads(company_indicators)
+  # # Fetching LPA's and DPA's
+  # url = f'https://api-analitica.sunoresearch.com.br/api/Indicator/GetIndicatorsYear?ticker={ticker}'
+  # with opener.open(url) as link:
+  #   company_indicators = link.read().decode('ISO-8859-1')
+  # company_indicators = json.loads(company_indicators)
   
-  # Only consider company indicators before the current_year (robust solution for backtesting purposes)
-  company_indicators = [ci for ci in company_indicators if ci['year'] < current_year]
+  # # Only consider company indicators before the current_year (robust solution for backtesting purposes)
+  # company_indicators = [ci for ci in company_indicators if ci['year'] < current_year]
   
-  last_dpas = [fundament['dpa'] for fundament in company_indicators]
-  last_lpas = [fundament['lpa'] for fundament in company_indicators]
+  # last_dpas = [fundament['dpa'] for fundament in company_indicators]
+  # last_lpas = [fundament['lpa'] for fundament in company_indicators]
   
-  if (len(last_lpas[:10]) > 0):
-    infos[ticker]['lpa_growth'] = (sum(last_lpas[:3]) / 3) >= (sum(last_lpas[-3:]) / 3)
+  # if (len(last_lpas[:10]) > 0):
+  #   infos[ticker]['lpa_growth'] = (sum(last_lpas[:3]) / 3) >= (sum(last_lpas[-3:]) / 3)
   
-  if (len(last_dpas[:10]) > 0):
-    infos[ticker]['dividends_stability'] = all(last_dpas[:10][i] > 0 for i in range(len(last_dpas[:10])))
+  # if (len(last_dpas[:10]) > 0):
+  #   infos[ticker]['dividends_stability'] = all(last_dpas[:10][i] > 0 for i in range(len(last_dpas[:10])))
 
 def add_ratings(shares):
   add_graham_columns(shares)
@@ -180,7 +180,7 @@ def fill_fair_price(shares):
       shares['Preço Justo (Graham)'][index] = sqrt(Decimal(22.5) * (shares['Cotação'][index] / shares['P/L'][index]) * (shares['Cotação'][index] / shares['P/VP'][index]))
     else:
       shares['Preço Justo (Graham)'][index] = 0
-  shares['Preço Justo (Graham) / Cotação'] = shares['Preço Justo (Graham)'] / shares['Cotação'] # Ideal > 1. Quanto maior, melhor! Significa que a ação deveria estar valendo 1 vezes mais, 2 vezes mais, 3 vezes mais, etc.
+  #shares['Preço Justo (Graham) / Cotação'] = shares['Preço Justo (Graham)'] / shares['Cotação'] # Ideal > 1. Quanto maior, melhor! Significa que a ação deveria estar valendo 1 vezes mais, 2 vezes mais, 3 vezes mais, etc.
 
 def fill_score(shares):
   shares['Graham Score'] += (shares['Preço Justo (Graham) / Cotação'] > Decimal(1.5)).astype(int)
