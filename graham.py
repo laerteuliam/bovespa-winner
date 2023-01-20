@@ -200,7 +200,7 @@ def fill_score_explanation(shares):
   shares['P/VP < 1.5 (E não negativo)'] = (shares['P/VP'] < 1.5) & (shares['P/VP'] >= 0)
   shares['Crescimento em 5 anos > 0.05'] = shares['Crescimento em 5 anos'] > 0.05
   shares['ROE > 20%'] = shares['ROE'] > 0.2
-  shares['Dividend Yield > 0.045 (Taxa Selic)'] = shares['Dividend Yield'] > 0.045
+  shares['Dividend Yield > 0.1375 (Taxa Selic)'] = shares['Dividend Yield'] > 0.1375
   shares['Liquidez Corrente > 1.5'] = shares['Liquidez Corrente'] > 1.5
   shares['Dívida Bruta/Patrimônio < 0.5'] = shares['Dívida Bruta/Patrimônio'] < 0.5
   shares['Patrimônio Líquido > 2 Bilhões'] = shares['Patrimônio Líquido'] > 2000000000
