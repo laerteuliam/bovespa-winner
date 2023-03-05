@@ -62,6 +62,8 @@ def populate_shares(year):
   else:
     shares = fundamentus.shares(year)
   
+
+  shares['Taxa Selic'] = 0.1375 #**************** CONFIGURAR TAXA SELIC AQUI ******************************************
   shares = shares[shares['Cotação'] > 0]
   shares = shares[shares['Liquidez 2 meses'] > 0]
   shares['Ranking (Graham)'] = 0
@@ -188,7 +190,7 @@ def fill_score(shares):
   shares['Graham Score'] += ((shares['P/VP'] < 1.5) & (shares['P/VP'] >= 0)).astype(int)
   shares['Graham Score'] += (shares['Crescimento em 5 anos'] > 0.05).astype(int)
   shares['Graham Score'] += (shares['ROE'] > 0.2).astype(int)
-  shares['Graham Score'] += (shares['Dividend Yield'] > 0.045).astype(int)
+  shares['Graham Score'] += (shares['Dividend Yield'] > shares['Taxa Selic']).astype(int)
   shares['Graham Score'] += (shares['Liquidez Corrente'] > 1.5).astype(int)
   shares['Graham Score'] += (shares['Dívida Bruta/Patrimônio'] < 0.5).astype(int)
   shares['Graham Score'] += (shares['Patrimônio Líquido'] > 2000000000).astype(int)
@@ -200,7 +202,7 @@ def fill_score_explanation(shares):
   shares['P/VP < 1.5 (E não negativo)'] = (shares['P/VP'] < 1.5) & (shares['P/VP'] >= 0)
   shares['Crescimento em 5 anos > 0.05'] = shares['Crescimento em 5 anos'] > 0.05
   shares['ROE > 20%'] = shares['ROE'] > 0.2
-  shares['Dividend Yield > 0.1375 (Taxa Selic)'] = shares['Dividend Yield'] > 0.1375
+  shares['Dividend Yield > (Taxa Selic)'] = shares['Dividend Yield'] > shares['Taxa Selic']
   shares['Liquidez Corrente > 1.5'] = shares['Liquidez Corrente'] > 1.5
   shares['Dívida Bruta/Patrimônio < 0.5'] = shares['Dívida Bruta/Patrimônio'] < 0.5
   shares['Patrimônio Líquido > 2 Bilhões'] = shares['Patrimônio Líquido'] > 2000000000
