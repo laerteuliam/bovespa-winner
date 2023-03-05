@@ -2136,12 +2136,12 @@ def shares(year = None):
       result = result.append(new_row)
   
   result = result[result['Cotação'] > 0]
-
   result = add_sector(result)
   
   return result
 
 def add_sector(shares):
+  shares['Nome'] = ''
   shares['Setor'] = ''
   shares['Subsetor'] = ''
   shares['Segmento'] = ''
@@ -2150,6 +2150,7 @@ def add_sector(shares):
   
   for index in range(len(shares)):
     ticker = shares.index[index]
+
     shares['Setor'][index] = categories.get(ticker[:4], missing)['setor']
     shares['Subsetor'][index] = categories.get(ticker[:4], missing)['subsetor']
     shares['Segmento'][index] = categories.get(ticker[:4], missing)['segmento']

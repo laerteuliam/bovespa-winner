@@ -224,7 +224,7 @@ def fill_special_infos(shares):
 
 # Reordena a tabela para mostrar a Cotação, o Valor Intríseco e o Graham Score como primeiras colunass
 def reorder_columns(shares):
-  columns = ['Ranking (Graham)', 'Cotação', 'Preço Justo (Graham)', 'Graham Score', 'Preço Justo (Graham) / Cotação', 'Setor', 'Subsetor', 'Segmento']
+  columns = ['Nome','Ranking (Graham)', 'Cotação', 'Preço Justo (Graham)', 'Graham Score', 'Preço Justo (Graham) / Cotação', 'Setor', 'Subsetor', 'Segmento']
   return shares[columns + [col for col in shares.columns if col not in tuple(columns)]]
 
 # Get the current_year integer value, for example: 2020

@@ -49,6 +49,7 @@ def shares(*args, **kwargs):
     statuses_result[item['ticker']] = item
   mapper = {
     # fundamentus fields => status_invest fields
+    'Nome':'companyName',
     'Cotação': 'price',
     'P/L': 'p_L',
     'P/VP': 'p_VP',
@@ -89,6 +90,7 @@ def shares(*args, **kwargs):
   for index in range(len(shares)):
     ticker = shares.index[index]
     if statuses_result.get(ticker):
+      shares['Nome'][index] = str(statuses_result[ticker].get(mapper['Nome'], shares['Nome'][index]))
       shares['Cotação'][index] = Decimal(str(statuses_result[ticker].get(mapper['Cotação'], shares['Cotação'][index])))
       shares['P/L'][index] = Decimal(str(statuses_result[ticker].get(mapper['P/L'], shares['P/L'][index])))
       shares['P/VP'][index] = Decimal(str(statuses_result[ticker].get(mapper['P/VP'], shares['P/VP'][index])))
@@ -117,6 +119,8 @@ def shares(*args, **kwargs):
       shares['Passivo/Ativo'][index] = Decimal(str(statuses_result[ticker].get(mapper['Passivo/Ativo'], numpy.nan)))
       shares['Liquidez Média Diária'][index] = Decimal(str(statuses_result[ticker].get(mapper['Liquidez Média Diária'], numpy.nan)))
   return shares
+
+
 
 def add_invest_columns(shares, new_status):
   for column in new_status.keys():
