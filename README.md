@@ -1,8 +1,16 @@
+
+
 # Docker release by Laerte Uliam
 
 just run "docker-compose up"
 
 An Excel Report will be exported in outputs folder.
+
+
+
+
+
+
 
 # Bovespa Winner 🥇
 
