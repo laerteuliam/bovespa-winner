@@ -11,7 +11,7 @@ sys.path.extend(['../waiting_bar'])
 import fundamentus
 
 import pandas
-import pyperclip
+# import pyperclip
 import numpy
 
 from math import sqrt
@@ -47,9 +47,11 @@ def shares(*args, **kwargs):
   statuses_result = {}
   for item in status_invest_shares:
     statuses_result[item['ticker']] = item
+  # print(statuses_result)
   mapper = {
     # fundamentus fields => status_invest fields
-    'Nome':'companyName',
+    'Papel':'ticker',
+    'Nome da Empresa':'companyname',
     'Cotação': 'price',
     'P/L': 'p_L',
     'P/VP': 'p_VP',
@@ -86,11 +88,12 @@ def shares(*args, **kwargs):
   }
   mapper.update(new_status)
   shares = fundamentus.shares()
+  
   shares = add_invest_columns(shares, new_status)
   for index in range(len(shares)):
     ticker = shares.index[index]
     if statuses_result.get(ticker):
-      shares['Nome'][index] = str(statuses_result[ticker].get(mapper['Nome'], shares['Nome'][index]))
+      shares['Nome da Empresa'][index] = str(statuses_result[ticker].get(mapper['Nome da Empresa'], shares['Nome da Empresa'][index]))
       shares['Cotação'][index] = Decimal(str(statuses_result[ticker].get(mapper['Cotação'], shares['Cotação'][index])))
       shares['P/L'][index] = Decimal(str(statuses_result[ticker].get(mapper['P/L'], shares['P/L'][index])))
       shares['P/VP'][index] = Decimal(str(statuses_result[ticker].get(mapper['P/VP'], shares['P/VP'][index])))
@@ -137,6 +140,6 @@ if __name__ == '__main__':
   shares = shares()
   shares = reorder_columns(shares)
   shares = shares.sort_values(by=['Cotação'], ascending=[True])
-  pyperclip.copy(shares.to_markdown())
-  print(shares)
+  # pyperclip.copy(shares.to_markdown())
+  # print(shares)
   progress_bar.stop()

@@ -2122,6 +2122,7 @@ def shares(year = None):
   # Estão em branco para que retorne todas as disponíveis
   data = {'pl_min': '', 'pl_max': '', 'pvp_min': '', 'pvp_max' : '', 'psr_min': '', 'psr_max': '', 'divy_min': '', 'divy_max': '', 'pativos_min': '', 'pativos_max': '', 'pcapgiro_min': '', 'pcapgiro_max': '', 'pebit_min': '', 'pebit_max': '', 'fgrah_min': '', 'fgrah_max': '', 'firma_ebit_min': '', 'firma_ebit_max': '', 'margemebit_min': '', 'margemebit_max': '', 'margemliq_min': '', 'margemliq_max': '', 'liqcorr_min': '', 'liqcorr_max': '', 'roic_min': '', 'roic_max': '', 'roe_min': '', 'roe_max': '', 'liq_min': '', 'liq_max': '', 'patrim_min': '', 'patrim_max': '', 'divbruta_min': '', 'divbruta_max': '', 'tx_cresc_rec_min': '', 'tx_cresc_rec_max': '', 'setor': '', 'negociada': 'ON', 'ordem': '1', 'x': '28', 'y': '16'}
   
+  print(url)
   with request.open(url, urllib.parse.urlencode(data).encode('UTF-8')) as link:
       content = link.read().decode('ISO-8859-1')
   
@@ -2133,7 +2134,7 @@ def shares(year = None):
   for rows in page.xpath('tbody')[0].findall("tr"):
       new_row = pandas.DataFrame(index=[rows.getchildren()[0][0].getchildren()[0].text],
                                  data=dataframe_data(rows, year))
-      result = result.append(new_row)
+      result = result._append(new_row)
   
   result = result[result['Cotação'] > 0]
   result = add_sector(result)
@@ -2141,7 +2142,7 @@ def shares(year = None):
   return result
 
 def add_sector(shares):
-  shares['Nome'] = ''
+  shares['Nome da Empresa'] = ''
   shares['Setor'] = ''
   shares['Subsetor'] = ''
   shares['Segmento'] = ''
@@ -2171,12 +2172,17 @@ def backtest(year = None):
     2017: 'https://web.archive.org/web/20170505164235/http://www.fundamentus.com.br/resultado.php',
     2018: 'https://web.archive.org/web/20180105120409/http://www.fundamentus.com.br/resultado.php',
     2019: 'https://web.archive.org/web/20190102202956/http://www.fundamentus.com.br/resultado.php',
-    2020: 'http://www.fundamentus.com.br/resultado.php'
+    2020: 'http://www.fundamentus.com.br/resultado.php',
+    2021: 'http://www.fundamentus.com.br/resultado.php',
+    2022: 'http://www.fundamentus.com.br/resultado.php',
+    2023: 'http://www.fundamentus.com.br/resultado.php',
+    2024: 'http://www.fundamentus.com.br/resultado.php'
   }
   return urls.get(year, 'http://www.fundamentus.com.br/resultado.php')
 
 def dataframe_opts(year = None):
-  opts = {'Cotação': [],
+  opts = {
+          'Cotação': [],
           'P/L': [],
           'P/VP': [],
           'PSR': [],

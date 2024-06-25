@@ -36,21 +36,20 @@ sys.path.extend([f'./{name}' for name in os.listdir(".") if os.path.isdir(name)]
 import fundamentus
 import bovespa
 import backtest
-import browser
-
-import pandas
-import numpy
-import re
+# import browser
+import pandas as pd
+# import numpy
+# import re
 
 from math import sqrt
 from decimal import Decimal
 
 import http.cookiejar
 import urllib.request
-import json
+# import json
 import threading
 import time
-import pyperclip
+
 
 # Populate shares panda dataframe with the provided year
 def populate_shares(year):
@@ -62,8 +61,8 @@ def populate_shares(year):
   else:
     shares = fundamentus.shares(year)
   
-
-  shares['Taxa Selic'] = 0.1375 #**************** CONFIGURAR TAXA SELIC AQUI ******************************************
+  shares['Papel'] = ''
+  shares['Taxa Selic'] = 0.1050 #**************** CONFIGURAR TAXA SELIC AQUI ******************************************
   shares = shares[shares['Cotação'] > 0]
   shares = shares[shares['Liquidez 2 meses'] > 0]
   shares['Ranking (Graham)'] = 0
@@ -224,12 +223,41 @@ def fill_special_infos(shares):
 
 # Reordena a tabela para mostrar a Cotação, o Valor Intríseco e o Graham Score como primeiras colunass
 def reorder_columns(shares):
-  columns = ['Nome','Ranking (Graham)', 'Cotação', 'Preço Justo (Graham)', 'Graham Score', 'Preço Justo (Graham) / Cotação', 'Setor', 'Subsetor', 'Segmento']
+  columns = ['Papel','Nome da Empresa','Ranking (Graham)', 'Cotação', 'Preço Justo (Graham)', 'Graham Score', 'Preço Justo (Graham) / Cotação', 'Setor', 'Subsetor', 'Segmento']
   return shares[columns + [col for col in shares.columns if col not in tuple(columns)]]
 
 # Get the current_year integer value, for example: 2020
 def current_year():
   return int(time.strftime("%Y"))
+
+def export_to_excel(array):
+  excel_filename = './outputs/output.xlsx'
+  
+  # workbook = xlsxwriter.Workbook(excel_filename)
+  # worksheet = workbook.add_worksheet()
+
+  # row = 0
+
+  # for col, data in enumerate(array):
+  #     worksheet.write_column(row, col, data)
+
+  columns = []
+  for index, col in enumerate(shares, start=1):
+    columns.append(col)
+
+  # workbook.close()
+  df = pd.DataFrame(array, columns=columns)
+  
+  # Get the index values (assuming the index starts from 0)
+  index_values = df.index.tolist()
+
+  # Set the index values in the first column
+  df['Papel'] = index_values
+
+# Write the DataFrame to an Excel file
+  df.to_excel(excel_filename, index=False)
+
+  print(f"Array has been exported to {excel_filename}")
 
 # python3 graham.py "{ 'year': 2015 }"
 if __name__ == '__main__':  
@@ -242,9 +270,16 @@ if __name__ == '__main__':
   shares.sort_values(by=['Graham Score', 'Preço Justo (Graham) / Cotação'], ascending=[False, False], inplace=True)
   
   shares['Ranking (Graham)'] = range(1, len(shares) + 1)
+
+  export_to_excel(shares)
   
-  print(shares)
-  pyperclip.copy(shares.to_markdown())
+    
+  
+  # pyperclip.copy(shares.to_markdown())
   
   if year != current_year():
     backtest.run_all(fundamentus.start_date(year), list(shares.index[:20]))
+
+  
+
+  
