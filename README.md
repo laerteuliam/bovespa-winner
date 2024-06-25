@@ -1,3 +1,9 @@
+# Docker release by Laerte Uliam
+
+just run "docker-compose up"
+
+An Excel Report will be exported in outputs folder.
+
 # Bovespa Winner 🥇
 
 Este é um Sistema em Python que aplica no Bovespa as estratégias e técnicas desenvolvidas pelos maiores investidores em ações para fins de comparação. 🥋
