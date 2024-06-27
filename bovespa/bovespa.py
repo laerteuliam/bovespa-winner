@@ -47,7 +47,6 @@ def shares(*args, **kwargs):
   statuses_result = {}
   for item in status_invest_shares:
     statuses_result[item['ticker']] = item
-  # print(statuses_result)
   mapper = {
     # fundamentus fields => status_invest fields
     'Papel':'ticker',
@@ -140,6 +139,4 @@ if __name__ == '__main__':
   shares = shares()
   shares = reorder_columns(shares)
   shares = shares.sort_values(by=['Cotação'], ascending=[True])
-  # pyperclip.copy(shares.to_markdown())
-  # print(shares)
   progress_bar.stop()

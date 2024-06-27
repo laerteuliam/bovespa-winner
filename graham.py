@@ -49,6 +49,7 @@ import urllib.request
 # import json
 import threading
 import time
+from datetime import date
 
 
 # Populate shares panda dataframe with the provided year
@@ -231,21 +232,11 @@ def current_year():
   return int(time.strftime("%Y"))
 
 def export_to_excel(array):
-  excel_filename = './outputs/output.xlsx'
   
-  # workbook = xlsxwriter.Workbook(excel_filename)
-  # worksheet = workbook.add_worksheet()
-
-  # row = 0
-
-  # for col, data in enumerate(array):
-  #     worksheet.write_column(row, col, data)
-
   columns = []
   for index, col in enumerate(shares, start=1):
     columns.append(col)
 
-  # workbook.close()
   df = pd.DataFrame(array, columns=columns)
   
   # Get the index values (assuming the index starts from 0)
@@ -254,7 +245,9 @@ def export_to_excel(array):
   # Set the index values in the first column
   df['Papel'] = index_values
 
-# Write the DataFrame to an Excel file
+  today = date.today()
+  excel_filename = f"./outputs/{today.year}_{today.month:02}_{today.day:02}_graham_report.xlsx"
+  # Write the DataFrame to an Excel file
   df.to_excel(excel_filename, index=False)
 
   print(f"Array has been exported to {excel_filename}")
@@ -272,10 +265,6 @@ if __name__ == '__main__':
   shares['Ranking (Graham)'] = range(1, len(shares) + 1)
 
   export_to_excel(shares)
-  
-    
-  
-  # pyperclip.copy(shares.to_markdown())
   
   if year != current_year():
     backtest.run_all(fundamentus.start_date(year), list(shares.index[:20]))
