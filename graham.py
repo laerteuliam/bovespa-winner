@@ -63,7 +63,7 @@ def populate_shares(year):
     shares = fundamentus.shares(year)
   
   shares['Papel'] = ''
-  shares['Taxa Selic'] = 0.1050 #**************** CONFIGURAR TAXA SELIC AQUI ******************************************
+  shares['Taxa Selic'] = 0.1125 #**************** CONFIGURAR TAXA SELIC AQUI ******************************************
   shares = shares[shares['Cotação'] > 0]
   shares = shares[shares['Liquidez 2 meses'] > 0]
   shares['Ranking (Graham)'] = 0
